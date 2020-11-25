@@ -118,5 +118,5 @@
         [popover/popover]
         (when debug?
           [reloader/reload-view @reloader/cnt])
-        (when config/keycard-test-menu-enabled?
+        (when config/keycard-test-menu-enabled? ;TODO: still needed?
           [keycard.test-menu/test-menu])]])}))

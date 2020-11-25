@@ -1,18 +1,14 @@
 (ns status-im.keycard.card
   (:require [re-frame.core :as re-frame]
-            [status-im.keycard.ios-keycard :as ios-keycard]
             [status-im.keycard.keycard :as keycard]
             [status-im.keycard.real-keycard :as real-keycard]
             [status-im.keycard.simulated-keycard :as simulated-keycard]
             [status-im.utils.config :as config]
-            [status-im.utils.platform :as platform]
             [taoensso.timbre :as log]))
 
 (defonce card (if config/keycard-test-menu-enabled?
                 (simulated-keycard/SimulatedKeycard.)
-                (if platform/android?
-                  (real-keycard/RealKeycard.)
-                  (ios-keycard/IOSKeycard.))))
+                (real-keycard/RealKeycard.)))
 
 (defn check-nfc-support []
   (log/info "[keycard] check-nfc-support")
@@ -63,6 +59,12 @@
 
     :on-card-disconnected
     #(re-frame/dispatch [:keycard.callback/on-card-disconnected])
+
+    :on-nfc-user-cancelled
+    #(re-frame/dispatch [:keycard.callback/on-nfc-user-cancelled])
+
+    :on-nfc-timeout
+    #(re-frame/dispatch [:keycard.callback/on-nfc-timeout])
 
     :on-nfc-enabled
     #(re-frame/dispatch [:keycard.callback/check-nfc-enabled-success true])
@@ -416,3 +418,12 @@
 
 (defn send-transaction-with-signature [args]
   (keycard/send-transaction-with-signature card args))
+
+(defn start-nfc [args]
+  (keycard/start-nfc card args))
+
+(defn stop-nfc [args]
+  (keycard/stop-nfc card args))
+
+(defn set-nfc-message [args]
+  (keycard/set-nfc-message card args))
