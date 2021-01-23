@@ -540,7 +540,10 @@
   {:events [:keycard.callback/on-nfc-timeout]}
   [{:keys [db]} _]
   (log/info "[keycard] nfc timeout")
-  {:dispatch [:signing.ui/cancel-is-pressed]})
+  {:db (-> db
+           (assoc-in [:keycard :nfc-running?] false)
+           (assoc-in [:keycard :card-connected?] false))
+   :keycard/start-nfc nil})
 
 (fx/defn on-register-card-events
   {:events [:keycard.callback/on-register-card-events]}
