@@ -10,7 +10,8 @@
             [status-im.utils.fx :as fx]
             [status-im.utils.keychain.core :as keychain]
             [status-im.utils.types :as types]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [status-im.utils.platform :as platform]))
 
 (def default-pin "000000")
 
@@ -190,12 +191,13 @@
     (fx/merge
      cofx
      {:dismiss-keyboard true}
-     (bottom-sheet/show-bottom-sheet
-      {:view {:show-handle?       false
-              :backdrop-dismiss?  false
-              :disable-drag?      true
-              :back-button-cancel false
-              :content            (keycard-sheet-content on-cancel connected? nil)}})
+     (if platform/android?
+       (bottom-sheet/show-bottom-sheet
+         {:view {:show-handle?       false
+                 :backdrop-dismiss?  false
+                 :disable-drag?      true
+                 :back-button-cancel false
+                 :content            (keycard-sheet-content on-cancel connected? nil)}}))
      (when on-card-read
        (set-on-card-read on-card-read))
      (set-on-card-connected on-card-connected)
