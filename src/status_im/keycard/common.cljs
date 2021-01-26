@@ -189,22 +189,22 @@
     (log/info "[keycard] show-sheet-with-connection-check"
               "card-connected?" connected?)
     (fx/merge
-      cofx
-      {:dismiss-keyboard true}
-      (bottom-sheet/show-bottom-sheet
-       {:view {:transparent        (platform/ios?)
-               :show-handle?       false
-              :backdrop-dismiss?  false
-              :disable-drag?      true
-              :back-button-cancel false
-              :content            (keycard-sheet-content on-cancel connected? nil)}})
-      (when on-card-read
-        (set-on-card-read on-card-read))
-      (set-on-card-connected on-card-connected)
-      (when connected?
-        (stash-on-card-connected))
-      (when connected?
-        handler))))
+     cofx
+     {:dismiss-keyboard true}
+     (bottom-sheet/show-bottom-sheet
+      {:view {:transparent        (platform/ios?)
+              :show-handle?       false
+             :backdrop-dismiss?  false
+             :disable-drag?      true
+             :back-button-cancel false
+             :content            (keycard-sheet-content on-cancel connected? nil)}})
+     (when on-card-read
+       (set-on-card-read on-card-read))
+     (set-on-card-connected on-card-connected)
+     (when connected?
+       (stash-on-card-connected))
+     (when connected?
+       handler))))
 
 (fx/defn show-connection-sheet
   [{:keys [db] :as cofx} args]
