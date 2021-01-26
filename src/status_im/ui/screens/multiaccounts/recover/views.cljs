@@ -6,6 +6,7 @@
             [status-im.multiaccounts.key-storage.core :as multiaccounts.key-storage]
             [status-im.keycard.recovery :as keycard]
             [status-im.i18n :as i18n]
+            [status-im.utils.config :as config]
             [status-im.utils.security]
             [status-im.ui.components.colors :as colors]
             [quo.core :as quo]

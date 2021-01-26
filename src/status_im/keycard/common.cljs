@@ -192,12 +192,12 @@
      cofx
      {:dismiss-keyboard true}
      (bottom-sheet/show-bottom-sheet
-      {:view {:transparent        (platform/ios?)
+      {:view {:transparent        platform/ios?
               :show-handle?       false
-             :backdrop-dismiss?  false
-             :disable-drag?      true
-             :back-button-cancel false
-             :content            (keycard-sheet-content on-cancel connected? nil)}})
+              :backdrop-dismiss?  false
+              :disable-drag?      true
+              :back-button-cancel false
+              :content            (keycard-sheet-content on-cancel connected? nil)}})
      (when on-card-read
        (set-on-card-read on-card-read))
      (set-on-card-connected on-card-connected)
