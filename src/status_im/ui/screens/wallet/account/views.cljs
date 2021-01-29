@@ -116,6 +116,31 @@
      {:style {:color colors/blue}}
      (i18n/label :t/check-on-opensea)]]])
 
+(defn render-on-ramp [{:keys [name logo-url description]}]
+  [quo/list-item
+   {:title          name
+    :subtitle       description
+    :icon           [list/item-image {:source logo-url}]
+    :accessory      :text
+    :accessory-text "thae"}])
+
+(views/defview render-buy-crypto []
+  (views/letsubs [on-ramps [:buy-crypto/on-ramps]]
+    [react/view {:flex 1}
+     [topbar/topbar {:title (i18n/label :t/buy-crypto)
+                     :modal? true}]
+     [list/flat-list {:data               on-ramps
+                      :key-fn             :site-url
+                      :render-fn          render-on-ramp}]]))
+
+(defn buy-crypto []
+  (reagent/create-class
+   {:component-did-mount #(re-frame/dispatch [:buy-crypto.ui/loaded])
+    :reagent-render render-buy-crypto}))
+
+(defn on-buy-crypto-pressed []
+  (re-frame/dispatch [:navigate-to :buy-crypto]))
+
 (views/defview assets-and-collections [address]
   (views/letsubs [{:keys [tokens nfts]} [:wallet/visible-assets-with-values address]
                   currency [:wallet/currency]]
@@ -127,11 +152,13 @@
         [tabs/tab-title state :history (i18n/label :t/history) (= tab :history)]]
        (cond
          (= tab :assets)
-         [list/flat-list {:data               tokens
-                          :default-separator? false
-                          :key-fn             :name
-                          :render-data        (:code currency)
-                          :render-fn          accounts/render-asset}]
+         [react/view {}
+           [buy-crypto]
+           [list/flat-list {:data               tokens
+                            :default-separator? false
+                            :key-fn             :name
+                            :render-data        (:code currency)
+                            :render-fn          accounts/render-asset}]]
          (= tab :nft)
          [react/view
           [collectibles-link]
