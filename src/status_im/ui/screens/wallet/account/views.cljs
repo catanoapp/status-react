@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [status-im.ethereum.core :as ethereum]
             [status-im.i18n :as i18n]
+            [status-im.ui.screens.chat.photos :as photos]
             [status-im.ui.components.animation :as animation]
             [status-im.ui.components.colors :as colors]
             [status-im.ui.components.icons.vector-icons :as icons]
@@ -116,13 +117,23 @@
      {:style {:color colors/blue}}
      (i18n/label :t/check-on-opensea)]]])
 
-(defn render-on-ramp [{:keys [name logo-url description]}]
-  [quo/list-item
-   {:title          name
-    :subtitle       description
-    :icon           [list/item-image {:source logo-url}]
-    :accessory      :text
-    :accessory-text "thae"}])
+(defn render-on-ramp [{:keys [name fees region logo-url site-url description]}]
+  [react/touchable-highlight {:on-press #(re-frame/dispatch [:browser.ui/message-link-pressed site-url])
+                              :style {:flex 1}}
+   [quo/list-item
+    {:title          [react/view {:style {:flex 1}}
+                      [quo/text {:size :large
+                                 :weight :bold}
+                       name]
+                      [quo/text {} description]]
+     :subtitle       [react/view {:style {:flex 1}}
+                      [quo/text {:size :small
+                                 :color :secondary} fees]
+                      [quo/text {:size :small
+                                 :color :secondary} region]]
+     :icon           [photos/photo logo-url {:size 40}]
+     :left-side-alignment :flex-start
+     :accessory      :text}]])
 
 (views/defview render-buy-crypto []
   (views/letsubs [on-ramps [:buy-crypto/on-ramps]]
