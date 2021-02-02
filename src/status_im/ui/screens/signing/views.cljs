@@ -110,7 +110,7 @@
                   retry-counter [:keycard/retry-counter]]
     (let [enter-step (or enter-step :sign)
           margin-bottom (if platform/ios? 40 0)]
-      [react/view { :margin-bottom margin-bottom }
+      [react/view {:margin-bottom margin-bottom}
        [pin.views/pin-view
         {:pin           pin
          :retry-counter retry-counter
