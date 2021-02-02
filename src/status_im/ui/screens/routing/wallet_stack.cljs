@@ -22,6 +22,8 @@
      :component wallet.accounts/accounts-overview}
     {:name      :wallet-account
      :component wallet.account/account}
+    {:name      :buy-crypto
+     :component wallet.account/buy-crypto}
     {:name      :add-new-account
      :component add-account/add-account}
     {:name      :add-new-account-pin

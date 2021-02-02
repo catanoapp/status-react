@@ -25,6 +25,8 @@
 
 (def state (reagent/atom {:tab :assets}))
 
+(def learn-more-url "https://our.status.im/")
+
 (defn toolbar-view [title]
   [topbar/topbar
    {:title title
@@ -138,8 +140,18 @@
 (views/defview render-buy-crypto []
   (views/letsubs [on-ramps [:buy-crypto/on-ramps]]
     [react/view {:flex 1}
-     [topbar/topbar {:title (i18n/label :t/buy-crypto)
-                     :modal? true}]
+     [topbar/topbar {:modal? true}]
+     [react/view {:align-items :center}
+      [react/view {:padding-vertical 16}
+       [quo/text {:weight :bold
+                 :size :x-large}
+       (i18n/label :t/buy-crypto)]]
+      [quo/text {:color :secondary}
+       (i18n/label :t/buy-crypto-choose-a-service)]
+      [react/touchable-highlight {:on-press #(re-frame/dispatch [:browser.ui/open-url learn-more-url])}
+       [react/view {:padding-vertical 11}
+        [quo/text {:color :link} (i18n/label :learn-more)]]]]
+     [quo/separator]
      [list/flat-list {:data               on-ramps
                       :key-fn             :site-url
                       :render-fn          render-on-ramp}]]))
@@ -151,6 +163,11 @@
 
 (defn on-buy-crypto-pressed []
   (re-frame/dispatch [:navigate-to :buy-crypto]))
+
+(defn buy-crypto-banner []
+  [react/view {}
+   [react/touchable-highlight {:on-press on-buy-crypto-pressed}
+    [quo/text {} (i18n/label :t/buy-crypto)]]])
 
 (views/defview assets-and-collections [address]
   (views/letsubs [{:keys [tokens nfts]} [:wallet/visible-assets-with-values address]
@@ -164,7 +181,7 @@
        (cond
          (= tab :assets)
          [react/view {}
-           [buy-crypto]
+           [buy-crypto-banner]
            [list/flat-list {:data               tokens
                             :default-separator? false
                             :key-fn             :name
