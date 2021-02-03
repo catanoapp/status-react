@@ -146,6 +146,10 @@
   (let [mentionable-users @(re-frame/subscribe [:chats/mentionable-users])
         timeout-id        (atom nil)
         last-text-change  (atom nil)]
+    (println :FOO (map-indexed
+                   (fn [idx item]
+                     [idx item])
+                   input-with-mentions))
     [rn/view {:style (styles/text-input-wrapper)}
      [rn/text-input
       {:style                    (styles/text-input)
@@ -173,7 +177,7 @@
                                (fn [idx item]
                                  [idx item])
                                input-with-mentions)]
-        ^{:key (str idx "_" text)}
+        ^{:key (str idx "_" type "_" text)}
         [rn/text (when (= type :mention)
                    {:style {:color "#0DA4C9"}})
          text])]]))
