@@ -146,10 +146,6 @@
   (let [mentionable-users @(re-frame/subscribe [:chats/mentionable-users])
         timeout-id        (atom nil)
         last-text-change  (atom nil)]
-    (println :FOO (map-indexed
-                   (fn [idx item]
-                     [idx item])
-                   input-with-mentions))
     [rn/view {:style (styles/text-input-wrapper)}
      [rn/text-input
       {:style                    (styles/text-input)
