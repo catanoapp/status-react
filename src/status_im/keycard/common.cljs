@@ -19,9 +19,7 @@
 
 (defn pin-retries [error]
   (let [matched-error (re-matches pin-mismatch-error error)]
-    (if matched-error
-      (js/parseInt (second (filter some? matched-error)))
-      nil)))
+    (when matched-error (js/parseInt (second (filter some? matched-error))))))
 
 (fx/defn dispatch-event
   [_ event]
@@ -61,7 +59,7 @@
   (or
    (= error "Tag was lost.")
    (= error "NFCError:100")
-   (not (nil? (re-matches #".*NFCError:100.*" error)))))
+   (re-matches #".*NFCError:100.*" error)))
 
 (defn find-multiaccount-by-keycard-instance-uid
   [db keycard-instance-uid]
@@ -403,11 +401,11 @@
          cofx
          {:db (-> db
                   (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries-count)
-                  (update-in [:keycard :pin] merge
-                             {:status              :error
-                              :login               []
-                              :import-multiaccount []
-                              :error-label         :t/pin-mismatch}))}
+                  (update-in [:keycard :pin] assoc
+                             :status              :error
+                             :login               []
+                             :import-multiaccount []
+                             :error-label         :t/pin-mismatch))}
          (hide-connection-sheet)
          (if (zero? pin-retries-count) (frozen-keycard-popup))
          (when (= flow :import)

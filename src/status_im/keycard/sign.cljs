@@ -204,9 +204,10 @@
         (fx/merge cofx
                   {:db (-> db
                            (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
-                           (update-in [:keycard :pin] merge {:status      :error
-                                                             :sign        []
-                                                             :error-label :t/pin-mismatch})
+                           (update-in [:keycard :pin] assoc
+                                      :status      :error
+                                      :sign        []
+                                      :error-label :t/pin-mismatch)
                            (assoc-in [:signing/sign :keycard-step] :pin))}
                   (common/hide-connection-sheet)
                   (if (zero? pin-retries) (common/frozen-keycard-popup)))

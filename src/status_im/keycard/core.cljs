@@ -217,16 +217,15 @@
         (fx/merge cofx
                   {:db (-> db
                            (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
-                           (update-in [:keycard :pin]
-                                      merge
-                                      {:status       :error
-                                       :enter-step   :current
-                                       :puk          []
-                                       :current      []
-                                       :original     []
-                                       :confirmation []
-                                       :sign         []
-                                       :error-label  :t/pin-mismatch}))}
+                           (update-in [:keycard :pin] assoc
+                                      :status       :error
+                                      :enter-step   :current
+                                      :puk          []
+                                      :current      []
+                                      :original     []
+                                      :confirmation []
+                                      :sign         []
+                                      :error-label  :t/pin-mismatch))}
                   (common/hide-connection-sheet)
                   (when (and (not setup?)
                              (not on-verified-failure))
