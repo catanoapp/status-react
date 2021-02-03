@@ -20,7 +20,7 @@
 (defn pin-retries [error]
   (let [matched-error (re-matches pin-mismatch-error error)]
     (if matched-error
-      (js/parseInt (nth (filter some? matched-error) 1))
+      (js/parseInt (second (filter some? matched-error)))
       nil)))
 
 (fx/defn dispatch-event
@@ -187,7 +187,7 @@
   (assert (fn? handler))
   (let [connected? (get-in db [:keycard :card-connected?])]
     (log/debug "[keycard] show-sheet-with-connection-check"
-              "card-connected?" connected?)
+               "card-connected?" connected?)
     (fx/merge
      cofx
      {:dismiss-keyboard true}
@@ -335,8 +335,8 @@
         pairing (get-in db [:multiaccounts/multiaccounts key-uid :keycard-pairing])
         pin     (string/join (get-in db [:keycard :pin :login]))]
     (log/debug "[keycard] get-keys-from-keycard"
-              "not nil pairing:" (boolean pairing)
-              ", not empty pin:" (boolean (seq pin)))
+               "not nil pairing:" (boolean pairing)
+               ", not empty pin:" (boolean (seq pin)))
     (when (and pairing
                (seq pin))
       {:db               (assoc-in db [:keycard :pin :status] :verifying)
@@ -395,21 +395,21 @@
   (let [tag-was-lost? (tag-lost? (:error error))
         key-uid       (get-in db [:keycard :application-info :key-uid])
         flow          (get-in db [:keycard :flow])
-        pin-retries   (pin-retries (:error error))]
+        pin-retries-count   (pin-retries (:error error))]
     (if tag-was-lost?
       {:db (assoc-in db [:keycard :pin :status] nil)}
-      (if (not (= nil pin-retries))
+      (if (not (nil? pin-retries-count))
         (fx/merge
          cofx
          {:db (-> db
-                  (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
+                  (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries-count)
                   (update-in [:keycard :pin] merge
                              {:status              :error
                               :login               []
                               :import-multiaccount []
                               :error-label         :t/pin-mismatch}))}
          (hide-connection-sheet)
-         (if (= 0 pin-retries) (frozen-keycard-popup))
+         (if (zero? pin-retries-count) (frozen-keycard-popup))
          (when (= flow :import)
            (navigation/navigate-to-cofx :keycard-recovery-pin nil)))
         (show-wrong-keycard-alert true)))))
@@ -426,7 +426,7 @@
            (get-in db [:multiaccounts/login :key-uid])))
         pairing' (or pairing (some->> key-uid (get-pairing db)))]
     (log/debug "[keycard] get-application-info"
-              "pairing" pairing')
+               "pairing" pairing')
     {:keycard/get-application-info {:pairing    pairing'
                                     :on-success on-card-read}}))
 
@@ -440,9 +440,9 @@
         on-success' (or on-success on-card-read)
         enter-step  (get-in db [:keycard :pin :enter-step])]
     (log/debug "[keycard] on-get-application-info-success"
-              "on-success" on-success'
-              "pin-retry-counter" pin-retry-counter
-              "puk-retry-counter" puk-retry-counter)
+               "on-success" on-success'
+               "pin-retry-counter" pin-retry-counter
+               "puk-retry-counter" puk-retry-counter)
     (fx/merge
      cofx
      {:db (-> db
@@ -472,9 +472,9 @@
         login?                 (= on-card-read :keycard/login-with-keycard)
         tag-was-lost?          (tag-lost? (:error error))]
     (log/debug "[keycard] application info error"
-              error
-              on-card-connected
-              last-on-card-connected)
+               error
+               on-card-connected
+               last-on-card-connected)
     (when-not tag-was-lost?
       (if login?
         (fx/merge cofx
@@ -503,7 +503,7 @@
                                     :else                     (get-in db [:keycard :on-card-read]))
         pairing                   (get-pairing db key-uid)]
     (log/debug "[keycard] on-card-connected" on-card-connected
-              "on-card-read" on-card-read)
+               "on-card-read" on-card-read)
     (when on-card-connected
       (fx/merge cofx
                 {:db (-> db

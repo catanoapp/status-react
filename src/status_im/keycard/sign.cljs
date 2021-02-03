@@ -200,7 +200,7 @@
   (let [tag-was-lost? (common/tag-lost? (:error error))
         pin-retries (common/pin-retries (:error error))]
     (when-not tag-was-lost?
-      (if (not (= nil pin-retries))
+      (if (not (nil? pin-retries))
         (fx/merge cofx
                   {:db (-> db
                            (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
@@ -209,7 +209,7 @@
                                                              :error-label :t/pin-mismatch})
                            (assoc-in [:signing/sign :keycard-step] :pin))}
                   (common/hide-connection-sheet)
-                  (if (= 0 pin-retries) (common/frozen-keycard-popup)))
+                  (if (zero? pin-retries) (common/frozen-keycard-popup)))
 
         (fx/merge cofx
                   (common/hide-connection-sheet)

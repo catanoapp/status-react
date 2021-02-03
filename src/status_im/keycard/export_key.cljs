@@ -15,7 +15,7 @@
                     {:db (assoc-in db [:keycard :pin :status] nil)}
                     (common/set-on-card-connected :wallet.accounts/generate-new-keycard-account))
 
-          (not (= nil pin-retries))
+          (not (nil? pin-retries))
           (fx/merge cofx
                     {:db (-> db
                              (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
@@ -29,7 +29,7 @@
                                                                :export-key   []
                                                                :error-label  :t/pin-mismatch}))}
                     (common/hide-connection-sheet)
-                    (if (= 0 pin-retries) (common/frozen-keycard-popup)))
+                    (if (zero? pin-retries) (common/frozen-keycard-popup)))
           :else
           (fx/merge cofx
                     (common/show-wrong-keycard-alert true)

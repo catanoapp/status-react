@@ -351,7 +351,7 @@
      :on-failure
      (fn [response]
        (log/debug "[keycard response fail] get-keys"
-                 (error-object->map response))
+                  (error-object->map response))
        (re-frame/dispatch [:keycard.callback/on-get-keys-error
                            (error-object->map response)]))})))
 

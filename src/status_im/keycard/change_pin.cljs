@@ -104,7 +104,7 @@
                 (fx/merge cofx
                           {:db (assoc-in db [:keycard :pin :status] nil)}
                           (common/set-on-card-connected :keycard/change-pin))
-                (if (not (= nil pin-retries))
+                (if (not (nil? pin-retries))
                   (fx/merge cofx
                             {:db (-> db
                                      (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
@@ -116,6 +116,6 @@
                                                                        :confirmation []
                                                                        :sign         []
                                                                        :error-label  :t/pin-mismatch}))}
-                            (if (= 0 pin-retries) (common/frozen-keycard-popup))
+                            (if (zero? pin-retries) (common/frozen-keycard-popup))
                             (navigation/navigate-to-cofx :enter-pin-settings nil))
                   (common/show-wrong-keycard-alert true))))))

@@ -213,7 +213,7 @@
         pin-retries (common/pin-retries (:error error))]
     (log/debug "[keycard] verify pin error" error)
     (when-not tag-was-lost?
-      (if (not (= nil pin-retries))
+      (if (not (nil? pin-retries))
         (fx/merge cofx
                   {:db (-> db
                            (assoc-in [:keycard :application-info :pin-retry-counter] pin-retries)
@@ -233,7 +233,7 @@
                     (if exporting?
                       (navigation/navigate-back)
                       (navigation/navigate-to-cofx :enter-pin-settings nil)))
-                  (if (= 0 pin-retries) (common/frozen-keycard-popup))
+                  (if (zero? pin-retries) (common/frozen-keycard-popup))
                   (when on-verified-failure
                     (fn [_] {:utils/dispatch-later
                              [{:dispatch [on-verified-failure]
