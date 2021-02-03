@@ -195,16 +195,6 @@
         [quo/text {:color :secondary}
          (i18n/label :t/wallet-total-value)]])]))
 
-(defn buy-crypto []
-  (let [empty-balances    @(re-frame/subscribe [:empty-balances?])
-        buy-crypto-hidden @(re-frame/subscribe [:wallet/buy-crypto-hidden])]
-    (when (and empty-balances
-               (not buy-crypto-hidden))
-      [react/view {:style {:padding-horizontal 8
-                           :padding-top        24}}
-       [buy-crypto/banner {:on-open  #(re-frame/dispatch [:browser.ui/open-url crypto-onramp-link])
-                           :on-close #(re-frame/dispatch [::wallet.events/hide-buy-crypto])}]])))
-
 (defn accounts-overview []
   (fn []
     (let [mnemonic @(re-frame/subscribe [:mnemonic])]
@@ -223,6 +213,5 @@
                               :accessibility-label :accounts-more-options}]}
         [accounts]
         [assets]
-        [buy-crypto]
         [react/view {:height 68}]]
        [send-button]])))

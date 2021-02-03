@@ -6,11 +6,12 @@
             [status-im.ui.screens.chat.photos :as photos]
             [status-im.ui.components.animation :as animation]
             [status-im.ui.components.colors :as colors]
-            [status-im.ui.components.icons.vector-icons :as icons]
+            [status-im.ui.components.icons.icons :as icons]
             [quo.core :as quo]
             [status-im.ui.components.list.views :as list]
             [status-im.ui.components.react :as react]
             [status-im.ui.components.topbar :as topbar]
+            [status-im.ui.components.icons.vector-icons :as vector-icons]
             [status-im.ui.screens.wallet.account.styles :as styles]
             [status-im.ui.screens.wallet.accounts.sheets :as sheets]
             [status-im.ui.screens.wallet.accounts.views :as accounts]
@@ -40,7 +41,7 @@
   [react/touchable-highlight {:on-press handler :style {:flex 1}}
    [react/view {:flex 1 :align-items :center :justify-content :center}
     [react/view {:flex-direction :row :align-items :center}
-     [icons/icon icon {:color color}]
+     [vector-icons/icon icon {:color color}]
      [react/text {:style {:margin-left 8 :color color}} label]]]])
 
 (def button-group-height 52)
@@ -67,7 +68,7 @@
        (ethereum/normalized-hex address)]]
      [react/view {:position :absolute :top 12 :right 12}
       [react/touchable-highlight {:on-press #(re-frame/dispatch [:show-popover {:view :share-account :address address}])}
-       [icons/icon :main-icons/share {:color               colors/white-persist
+       [vector-icons/icon :main-icons/share {:color               colors/white-persist
                                       :accessibility-label :share-wallet-address-icon}]]]
      [react/view {:height                     button-group-height :background-color          colors/black-transparent-20
                   :border-bottom-right-radius 8                   :border-bottom-left-radius 8 :flex-direction :row}
@@ -111,7 +112,7 @@
              :align-items :center
              :background-color colors/blue-light
              :height           52}}
-    [icons/tiny-icon
+    [vector-icons/tiny-icon
      :tiny-icons/tiny-external
      {:color           colors/blue
       :container-style {:margin-right 5}}]
@@ -165,9 +166,38 @@
   (re-frame/dispatch [:navigate-to :buy-crypto]))
 
 (defn buy-crypto-banner []
-  [react/view {}
-   [react/touchable-highlight {:on-press on-buy-crypto-pressed}
-    [quo/text {} (i18n/label :t/buy-crypto)]]])
+  [react/touchable-highlight {:on-press on-buy-crypto-pressed}
+   [react/view {:style {:margin-horizontal 16
+                        :flex-direction :row
+                        :justify-content :space-between
+                        :align-items :center
+                        :flex 1
+                        :margin-top 16
+                        :border-radius 16
+                        :margin-bottom 8
+                        :padding-horizontal 12
+                        :padding-vertical 5
+                        :background-color "#ECEFFC"}}
+    [react/view {:flex-direction :row}
+      [react/view {:style {:height 16
+                           :padding 4
+                           :margin-top 4
+                           :justify-content :center
+                           :border-radius 4
+                           :background-color colors/blue}}
+       [quo/text {:weight :bold
+                  :size :tiny
+                  :style {:text-transform :uppercase
+                          :color colors/white}}
+        (i18n/label :t/new)]]
+     [react/view {:style {:padding-left 5}}
+       [quo/text {:size :large
+                  :color :link} (i18n/label :t/buy-crypto)]]]
+    [react/view {:style {:align-content :flex-end
+                         :align-self :flex-end}}
+     [react/image {:source (icons/icon-source :buy-crypto)
+                   :style {:width 68
+                           :height 36}}]]]])
 
 (views/defview assets-and-collections [address]
   (views/letsubs [{:keys [tokens nfts]} [:wallet/visible-assets-with-values address]
@@ -289,7 +319,7 @@
           [react/view {:style {:flex 1
                                :align-items :center
                                :margin 8}}
-           [icons/icon
+           [vector-icons/icon
             :main-icons/warning
             {:color           :red
              :container-style {:background-color (quo-colors/get-color :negative-02)
