@@ -24,14 +24,14 @@
   [{:keys [db] :as cofx}]
   (let [card-state (get-in db [:keycard :card-state])
         pin        (common/vector->string (get-in db [:keycard :pin :original]))]
-    (log/info "start-installation: card-state" card-state)
+    (log/debug "start-installation: card-state" card-state)
     (case card-state
 
       :pre-init
       {:keycard/init-card pin}
 
       (do
-        (log/info (str "Cannot start keycard installation from state: " card-state))
+        (log/debug (str "Cannot start keycard installation from state: " card-state))
         (fx/merge cofx
                   {:utils/show-popup {:title   (i18n/label :t/error)
                                       :content (i18n/label :t/something-went-wrong)}}
@@ -244,7 +244,7 @@
   {:events [:keycard.callback/on-install-applet-and-init-card-error
             :keycard.callback/on-init-card-error]}
   [{:keys [db] :as cofx} {:keys [code error]}]
-  (log/info "[keycard] install applet and init card error: " error)
+  (log/debug "[keycard] install applet and init card error: " error)
   (fx/merge cofx
             {:db (assoc-in db [:keycard :setup-error] error)}
             (common/set-on-card-connected :keycard/load-preparing-screen)

@@ -18,7 +18,7 @@
 (re-frame/reg-fx
  :keycard/stop-nfc
  (fn []
-   (log/info "fx stop-nfc")
+   (log/debug "fx stop-nfc")
    (card/stop-nfc
     {:on-success #(re-frame/dispatch [:keycard.callback/stop-nfc-success])
      :on-failure #(re-frame/dispatch [:keycard.callback/stop-nfc-failure])})))
@@ -30,22 +30,22 @@
 (re-frame/reg-fx
  :keycard/start-nfc-and-show-connection-sheet
  (fn [args]
-   (log/info "fx start-nfc-and-show-connection-sheet")
+   (log/debug "fx start-nfc-and-show-connection-sheet")
    (card/start-nfc
     {:on-success
      (fn []
-       (log/info "nfc started successfully. next: show-connection-sheet")
+       (log/debug "nfc started successfully. next: show-connection-sheet")
        (re-frame/dispatch [:keycard.callback/start-nfc-success])
        (re-frame/dispatch [:keycard.callback/show-connection-sheet args]))
      :on-failure
      (fn []
-       (log/info "nfc failed star starting. not calling show-connection-sheet")
+       (log/debug "nfc failed star starting. not calling show-connection-sheet")
        (re-frame/dispatch [:keycard.callback/start-nfc-failure]))})))
 
 (re-frame/reg-fx
  :keycard/stop-nfc-and-hide-connection-sheet
  (fn []
-   (log/info "fx stop-nfc-and-hide-connection-sheet")
+   (log/debug "fx stop-nfc-and-hide-connection-sheet")
    (card/stop-nfc
     {:on-success
      (fn []

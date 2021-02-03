@@ -15,21 +15,21 @@
 (defonce active-listeners (atom []))
 
 (defn start-nfc [{:keys [on-success on-failure prompt-message]}]
-  (log/info "start-nfc")
+  (log/debug "start-nfc")
   (.. status-keycard
       (startNFC (str prompt-message))
       (then on-success)
       (catch on-failure)))
 
 (defn stop-nfc [{:keys [on-success on-failure error-message]}]
-  (log/info "stop-nfc")
+  (log/debug "stop-nfc")
   (.. status-keycard
       (stopNFC (str error-message))
       (then on-success)
       (catch on-failure)))
 
 (defn set-nfc-message [{:keys [on-success on-failure status-message]}]
-  (log/info "set-nfc-message")
+  (log/debug "set-nfc-message")
   (.. status-keycard
       (setNFCMessage (str status-message))
       (then on-success)
@@ -221,7 +221,7 @@
 
 (defn sign
   [{:keys [pairing pin path hash on-success on-failure]}]
-  (log/info "keycard sign" "path" path)
+  (log/debug "keycard sign" "path" path)
   (when (and pairing pin hash)
     (if path
       (.. status-keycard

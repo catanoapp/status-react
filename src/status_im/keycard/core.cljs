@@ -521,25 +521,25 @@
 (fx/defn on-card-connected
   {:events [:keycard.callback/on-card-connected]}
   [{:keys [db]} _]
-  (log/info "[keycard] card globally connected")
+  (log/debug "[keycard] card globally connected")
   {:db (assoc-in db [:keycard :card-connected?] true)})
 
 (fx/defn on-card-disconnected
   {:events [:keycard.callback/on-card-disconnected]}
   [{:keys [db]} _]
-  (log/info "[keycard] card disconnected")
+  (log/debug "[keycard] card disconnected")
   {:db (assoc-in db [:keycard :card-connected?] false)})
 
 (fx/defn on-nfc-user-cancelled
   {:events [:keycard.callback/on-nfc-user-cancelled]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc user cancelled")
+  (log/debug "[keycard] nfc user cancelled")
   {:dispatch [:signing.ui/cancel-is-pressed]})
 
 (fx/defn on-nfc-timeout
   {:events [:keycard.callback/on-nfc-timeout]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc timeout")
+  (log/debug "[keycard] nfc timeout")
   {:db (-> db
            (assoc-in [:keycard :nfc-running?] false)
            (assoc-in [:keycard :card-connected?] false))
@@ -577,20 +577,20 @@
 (fx/defn start-nfc-success
   {:events [:keycard.callback/start-nfc-success]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc started success")
+  (log/debug "[keycard] nfc started success")
   {:db (assoc-in db [:keycard :nfc-running?] true)})
 
 (fx/defn start-nfc-failure
   {:events [:keycard.callback/start-nfc-failure]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc failed starting")
+  (log/debug "[keycard] nfc failed starting")
   {}) ;; leave current value on :nfc-running
 
 (fx/defn stop-nfc-success
   {:events [:keycard.callback/stop-nfc-success]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc stopped success")
-  (log/info "[keycard] setting card-connected? and nfc-running? to false")
+  (log/debug "[keycard] nfc stopped success")
+  (log/debug "[keycard] setting card-connected? and nfc-running? to false")
   {:db (-> db
            (assoc-in [:keycard :nfc-running?] false)
            (assoc-in [:keycard :card-connected?] false))})
@@ -598,5 +598,5 @@
 (fx/defn stop-nfc-failure
   {:events [:keycard.callback/stop-nfc-failure]}
   [{:keys [db]} _]
-  (log/info "[keycard] nfc failed stopping")
+  (log/debug "[keycard] nfc failed stopping")
   {}) ;; leave current value on :nfc-running
