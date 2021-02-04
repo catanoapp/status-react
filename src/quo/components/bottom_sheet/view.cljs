@@ -190,7 +190,7 @@
                                        (when back-button-cancel
                                          (close-sheet)))}
       [rn/view {:style          styles/container
-                :opacity (if transparent 0 1)
+                :opacity        (if transparent 0 1)
                 :pointer-events :box-none}
        [gesture-handler/tap-gesture-handler (merge {:enabled backdrop-dismiss?}
                                                    tap-gesture-handler)
