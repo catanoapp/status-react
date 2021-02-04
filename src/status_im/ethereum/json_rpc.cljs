@@ -117,7 +117,8 @@
    "multiaccounts_deleteIdentityImage" {}
    "wakuext_createCommunity" {}
    "wakuext_createCommunityChat" {}
-   "wakuext_inviteUserToCommunity" {}
+   "wakuext_inviteUsersToCommunity" {}
+   "wakuext_shareCommunity" {}
    "wakuext_removeUserFromCommunity" {}
    "wakuext_requestToJoinCommunity" {}
    "wakuext_acceptRequestToJoinCommunity" {}

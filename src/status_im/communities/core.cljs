@@ -180,28 +180,32 @@
                      #(re-frame/dispatch [:transport/message-sent % 1])
                      :on-failure #(log/error "failed to send a message" %)}]})
 
-(fx/defn share-community
-  {:events [::share-community]}
-  [cofx user-pk community-id]
-  (models.chat/upsert-chat cofx
-                           {:chat-id user-pk
-                            :active  (get-in cofx [:db :chats user-pk :active])}
-                           #(re-frame/dispatch [::chat-created community-id user-pk])))
-
-(fx/defn invite-user
+(fx/defn invite-users
   {:events [::invite-people-confirmation-pressed]}
   [cofx user-pk contacts]
-  (let [community-id (fetch-community-id-input cofx)]
-    (when (pos? (count contacts))
-      (log/error "Inviting contacts is not yet implemented"))
-    (fx/merge cofx
-              #_{::json-rpc/call [{:method     "wakuext_inviteUserToCommunity"
-                                   :params     [community-id user-pk]
-                                   :on-success #(re-frame/dispatch [::people-invited %])
-                                   :on-error   #(do
-                                                  (log/error "failed to invite-user community" %)
-                                                  (re-frame/dispatch [::failed-to-invite-people %]))}]}
-              (share-community user-pk community-id))))
+  (let [community-id (fetch-community-id-input cofx)
+        pks (conj (map :public-key contacts)
+                  user-pk)]
+    {::json-rpc/call [{:method     "wakuext_inviteUsersToCommunity"
+                       :params     [{:communityId community-id 
+                                     :users pks}]
+                       :on-success #(re-frame/dispatch [::people-invited %])
+                       :on-error   #(do
+                                     (log/error "failed to invite-user community" %)
+                                     (re-frame/dispatch [::failed-to-invite-people %]))}]}))
+(fx/defn share-community
+  {:events [::share-community-confirmation-pressed]}
+  [cofx user-pk contacts]
+  (let [community-id (fetch-community-id-input cofx)
+        pks (conj (map :public-key contacts)
+                  user-pk)]
+    {::json-rpc/call [{:method     "wakuext_shareCommunity"
+                       :params     [{:communityId community-id 
+                                     :users pks}]
+                       :on-success #(re-frame/dispatch [::people-invited %])
+                       :on-error   #(do
+                                     (log/error "failed to invite-user community" %)
+                                     (re-frame/dispatch [::failed-to-invite-people %]))}]}))
 
 (fx/defn create
   {:events [::create-confirmation-pressed]}
